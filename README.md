@@ -1,8 +1,29 @@
-# Prometric
-**Generates Prometheus Metric with a go server**
+# prometheus-k6-fusion
+
+**prometheus-k6-fusion** is a lightweight Go-based API server that provides CRUD operations for sample data objects and exposes Prometheus metrics.  
+It includes a set of **Grafana k6 scripts** that generate real-time load to simulate traffic and visualize metrics — a perfect demo of **observability in action**.
+
+# Target Audience
+- **Developers learning Prometheus integration** in Go.
+- **Teams exploring observability setups** with Prometheus and Grafana.
+- **People practicing performance** testing with k6.
+- **Interview/demo projects** to showcase system design, metrics, and automation skills.
+
+It’s very small repo to have a quick start yet rich enough to demonstrate end-to-end observability concepts.
+
+# Why It’s Useful
+- Provides a **ready-to-run environment** for:
+  - CRUD REST API (in Go)
+  - Prometheus metrics exposure
+  - k6 traffic generation
+- Ideal for learning, teaching, or demonstrating:
+  - Metrics instrumentation best practices
+  - Monitoring pipelines
+  - Performance & load testing workflows
+
 
 # Introduction
-While learning prometheus, it has been often challenging to have real world application metrics. The prometric applicatino solves this problem by exposing the following metrics at the endpoint `http://localhost:7080/metrics`:
+While learning prometheus, it has been often challenging to have real world application metrics. The prometheus-k6-fusion applicatino solves this problem by exposing the following metrics at the endpoint `http://localhost:7080/metrics`:
 
 
 | Metric | Type | Description |
@@ -20,7 +41,9 @@ While learning prometheus, it has been often challenging to have real world appl
 | `app_memory_usage_megabytes` | Gauge | Memory usage of the Go process (MB). |
 
 # How it works
-This has two components: 1. Prometric 2. K6 Script
+This has two components: 
+- **Prometric** : The lightweight Go API server exposing Prometheus metrics, calling this prometric (prometheus+metric)
+-  **K6 Script**: The **Grafana k6 scripts** that generate real-time load to simulate traffic.
 
 ## Prometric
 Prometric is a lightweight API server written in Go that provides CRUD operations for Person objects. It uses an in-memory database and exposes Prometheus metrics for observability.
@@ -30,6 +53,7 @@ Prometric is a lightweight API server written in Go that provides CRUD operation
 - In-memory storage (no external database required)
 - Built-in Prometheus metrics for monitoring
 - Runs on port :7080 by default
+
 ### API Endpoints
 
 | Method | Endpoint        | Description                 |
@@ -46,11 +70,11 @@ Prometric is a lightweight API server written in Go that provides CRUD operation
 I use [Grafan k6](https://k6.io/) to generate traffic against the prometric API. This [k6-scripts](./scripts/k6-scripts.js) demonstrates a simple scenario that exercises the CRUD endpoints for Person objects.
 
 ### What the script does
-- Creates some 50K in ~10 mins (50000 iterations shared among 50 VUs, maxDuration: 10m).
+- Creates some 50K Objects (ie Person) in ~10 mins (50000 iterations shared among 50 VUs, maxDuration: 10m).
 - Tries to get Person by Random Id for 10 mins (20.00 iterations/s for 10m0s, maxVUs: 10).
 - Tries to get Person list  for 10 mins (10.00 iterations/s for 10m0s, maxVUs: 5).
 - Updates the Person for 5 mins (5.00 iterations/s for 2m0s, maxVUs: 5).
-- Deletes about 500 Persons randomly within 10 mins (1500 iterations shared among 2 VUs,maxDuration: 10m0s).
+- Deletes about 1500 Persons randomly within 10 mins (1500 iterations shared among 2 VUs,maxDuration: 10m0s).
 
 These above iterations are enough to generate some adequate prometheus metrics which can be used to play with prometheus and grafana dashboard.
 
@@ -59,8 +83,8 @@ These above iterations are enough to generate some adequate prometheus metrics w
 ## Run Locally
 - Clone the repo and run the app
 ```bash
-$ git clone https://github.com/peek8/prometric.git
-$ cd prometric
+$ git clone https://github.com/peek8/prometheus-k6-fusion.git
+$ cd prometheus-k6-fusion
 $ go run main.go
 ```
 

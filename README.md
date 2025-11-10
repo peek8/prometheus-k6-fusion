@@ -22,9 +22,24 @@ It’s very small repo to have a quick start yet rich enough to demonstrate end-
   - Performance & load testing workflows
 
 
-# Introduction
-While learning prometheus, it has been often challenging to have real world application metrics. The prometheus-k6-fusion applicatino solves this problem by exposing the following metrics at the endpoint `http://localhost:7080/metrics`:
+# The Prometheus Metrics
+[Prometheus metrics](https://prometheus.io/docs/concepts/metric_types/) are numerical representations of the state or behavior of a system that are collected over time to enable monitoring and alerting.
 
+When learning [Prometheus](https://prometheus.io/), one common challenge is finding realistic application metrics to experiment with.
+Most tutorials provide only static or simulated data — making it hard to observe how metrics actually behave under real load.
+
+The prometheus-k6-fusion application bridges that gap by acting as a live, instrumented Go API server.
+It exposes real Prometheus metrics that update dynamically as requests flow through the service.
+
+You can explore these metrics directly at:
+```
+http://localhost:7080/metrics
+```
+
+This endpoint follows the Prometheus exposition format, which makes it ready to be scraped by Prometheus and visualized in Grafana.
+
+
+## Exposed Metrics
 
 | Metric | Type | Description |
 |---|---|---|

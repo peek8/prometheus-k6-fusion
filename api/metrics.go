@@ -81,7 +81,6 @@ var (
 		Buckets: prometheus.ExponentialBuckets(100, 2, 10), // 100B → 50KB
 	})
 
-
 	cpuUsageGauge = prometheus.NewGauge(prometheus.GaugeOpts{
 		Name: "app_cpu_usage_percent",
 		Help: "CPU usage of the Go process (percent).",
@@ -95,11 +94,11 @@ var (
 
 func initMetrics() {
 	prometheus.MustRegister(
-		httpRequestsTotal, 
+		httpRequestsTotal,
 		httpStatusCode,
-		httpRequestsInProgress, 
-		httpRequestDuration, 
-		personStoreCount, 
+		httpRequestsInProgress,
+		httpRequestDuration,
+		personStoreCount,
 		personCreatedTotal,
 		personDeletedTotal,
 		personNotFoundTotal,

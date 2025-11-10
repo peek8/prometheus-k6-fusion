@@ -1,4 +1,4 @@
-module peek8.io/prometric
+module github.com/peek8/prometheus-k6-fusion
 
 go 1.25.0
 

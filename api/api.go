@@ -92,7 +92,7 @@ func listPersonsHandler(s *store) http.HandlerFunc {
 
 		list := s.list(start, 20)
 		personStoreCount.Set(float64(s.count()))
-		
+
 		time.Sleep(randomSleepTime(1))
 
 		w.Header().Set("Content-Type", "application/json")
@@ -199,5 +199,5 @@ func deletePersonHandler(s *store) http.HandlerFunc {
 
 func randomSleepTime(maxTimeSec int) time.Duration {
 	// Sleep random seconds to add some delay to make the histogram better
-	return time.Duration(rand.Intn(maxTimeSec * 1000)) * time.Millisecond
+	return time.Duration(rand.Intn(maxTimeSec*1000)) * time.Millisecond
 }

@@ -85,10 +85,10 @@ Prometric is a lightweight API server written in Go that provides CRUD operation
 I use [Grafan k6](https://k6.io/) to generate traffic against the prometric API. This [k6-scripts](./scripts/k6-scripts.js) demonstrates a simple scenario that exercises the CRUD endpoints for Person objects.
 
 ### What the script does
-- Creates some 50K Objects (ie Person) in ~10 mins (50000 iterations shared among 50 VUs, maxDuration: 10m).
+- Creates some 50K Objects (ie Person) in ~20 mins (50000 iterations shared among 50 VUs, maxDuration: 10m).
 - Tries to get Person by Random Id for 10 mins (20.00 iterations/s for 10m0s, maxVUs: 10).
 - Tries to get Person list  for 10 mins (10.00 iterations/s for 10m0s, maxVUs: 5).
-- Updates the Person for 5 mins (5.00 iterations/s for 2m0s, maxVUs: 5).
+- Updates the Person for 10 mins (5.00 iterations/s for 2m0s, maxVUs: 5).
 - Deletes about 1500 Persons randomly within 10 mins (1500 iterations shared among 2 VUs,maxDuration: 10m0s).
 
 These above iterations are enough to generate some adequate prometheus metrics which can be used to play with prometheus and grafana dashboard.
@@ -135,7 +135,34 @@ If you are at linux, you might need to add `--add-host` extra param. For example
 ```bash
 $ docker run -i --rm \
   --add-host=host.docker.internal:host-gateway \
-  -e BASE_URL=http://host.docker.internal:8080 \
+  -e BASE_URL=http://host.docker.internal:7080 \
   grafana/k6:latest run  - < ./scripts/k6-scripts.js 
 ```
 
+## Prometheus and Grafana
+### Run Prometheus
+Run prometheus using the [prometheus.yml file](./resources/prometheus.yml):
+```bash
+$ docker run \
+    -p 9090:9090 \
+    -v ./resources/prometheus.yml:/etc/prometheus/prometheus.yml \
+    prom/prometheus
+```
+
+N.B: If you are using podman use `host.containers.internal` as targets at prometheus.yml file, ie: 
+```
+targets: ["host.containers.internal:7080"]
+```
+
+### Run Grafana
+Run Grafan using `docker`:
+
+```
+$ docker run -d -p 3000:3000 grafana/grafana
+```
+Then grafana will be available at `http://localhost:3000`, use `admin:admin ` as to login for the first time.
+
+### Grafana Dashboard
+You can create a nice grafana dashboard using these metrics using the [ready-to-import Grafana JSON dashboard](./resources/grafana-dashboard.json). 
+
+At this json the Datasource name is `prometric-k6`, if you have already a datasource use that in the json file Or you can create it using running the [grafana-datasource.sh](./resources/grafana-datasource.sh) where the credentials used is `admin/admin`, Change it to your own user name/password.

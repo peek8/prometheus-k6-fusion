@@ -1,0 +1,190 @@
+{
+  "id": null,
+  "title": "Prometric-k6 API Overview",
+  "tags": ["prometheus", "api", "observability"],
+  "timezone": "browser",
+  "schemaVersion": 38,
+  "version": 1,
+  "refresh": "5s",
+  "time": {
+    "from": "now-1h",
+    "to": "now"
+  },
+  "panels": [
+    {
+      "type": "row",
+      "title": "Summary KPIs",
+      "collapsed": false,
+      "gridPos": {"h": 1, "w": 24, "x": 0, "y": 0}
+    },
+    {
+      "type": "stat",
+      "title": "Total Requests (5m)",
+      "datasource": "prometric-k6",
+      "targets": [
+        {"expr": "increase(http_requests_total[5m])", "legendFormat": ""}
+      ],
+      "gridPos": {"h": 4, "w": 4, "x": 0, "y": 1}
+    },
+    {
+      "type": "stat",
+      "title": "Requests In Progress",
+      "datasource": "prometric-k6",
+      "targets": [
+        {"expr": "http_requests_in_progress", "legendFormat": ""}
+      ],
+      "gridPos": {"h": 4, "w": 4, "x": 4, "y": 1}
+    },
+    {
+      "type": "stat",
+      "title": "Persons Stored",
+      "datasource": "prometric-k6",
+      "targets": [
+        {"expr": "person_store_count", "legendFormat": ""}
+      ],
+      "gridPos": {"h": 4, "w": 4, "x": 8, "y": 1}
+    },
+    {
+      "type": "stat",
+      "title": "CPU Usage (%)",
+      "datasource": "prometric-k6",
+      "targets": [
+        {"expr": "app_cpu_usage_percent", "legendFormat": ""}
+      ],
+      "fieldConfig": {"defaults": {"thresholds": {"mode": "absolute", "steps": [{"color": "green", "value": null}, {"color": "yellow", "value": 70}, {"color": "red", "value": 90}]}}},
+      "gridPos": {"h": 4, "w": 4, "x": 12, "y": 1}
+    },
+    {
+      "type": "stat",
+      "title": "Memory Usage (MB)",
+      "datasource": "prometric-k6",
+      "targets": [
+        {"expr": "app_memory_usage_megabytes", "legendFormat": ""}
+      ],
+      "gridPos": {"h": 4, "w": 4, "x": 16, "y": 1}
+    },
+    {
+      "type": "row",
+      "title": "HTTP Request Traffic",
+      "collapsed": false,
+      "gridPos": {"h": 1, "w": 24, "x": 0, "y": 5}
+    },
+    {
+      "type": "timeseries",
+      "title": "Requests per Method",
+      "datasource": "prometric-k6",
+      "targets": [
+        {"expr": "sum by (method) (rate(http_requests_total[5m]))", "legendFormat": "{{method}}"}
+      ],
+      "gridPos": {"h": 8, "w": 12, "x": 0, "y": 6}
+    },
+    {
+      "type": "timeseries",
+      "title": "Requests per code Code",
+      "datasource": "prometric-k6",
+      "targets": [
+        {"expr": "sum by (code) (rate(http_requests_total[5m]))", "legendFormat": "{{code}}"}
+      ],
+      "gridPos": {"h": 8, "w": 12, "x": 12, "y": 6}
+    },
+    {
+      "type": "gauge",
+      "title": "Error Rate",
+      "datasource": "prometric-k6",
+      "targets": [
+        {"expr": "(sum(rate(http_requests_total{code!~\"2..\"}[5m])) / sum(rate(http_requests_total[5m]))) * 100", "legendFormat": ""}
+      ],
+      "fieldConfig": {"defaults": {"thresholds": {"mode": "percentage", "steps": [{"color": "green", "value": null}, {"color": "yellow", "value": 1}, {"color": "red", "value": 5}]}}},
+      "gridPos": {"h": 6, "w": 8, "x": 0, "y": 14}
+    },
+    {
+      "type": "row",
+      "title": "HTTP Latency & Performance",
+      "collapsed": false,
+      "gridPos": {"h": 1, "w": 24, "x": 0, "y": 20}
+    },
+    {
+      "type": "timeseries",
+      "title": "Average Request Duration",
+      "datasource": "prometric-k6",
+      "targets": [
+        {"expr": "sum(rate(http_request_duration_seconds_sum[5m])) / sum(rate(http_request_duration_seconds_count[5m]))", "legendFormat": "avg duration"}
+      ],
+      "gridPos": {"h": 8, "w": 12, "x": 0, "y": 21}
+    },
+    {
+      "type": "timeseries",
+      "title": "95th Percentile Latency",
+      "datasource": "prometric-k6",
+      "targets": [
+        {"expr": "histogram_quantile(0.95, sum(rate(http_request_duration_seconds_bucket[5m])) by (le))", "legendFormat": "p95 latency"}
+      ],
+      "gridPos": {"h": 8, "w": 12, "x": 12, "y": 21}
+    },
+    {
+      "type": "timeseries",
+      "title": "Requests In Progress",
+      "datasource": "prometric-k6",
+      "targets": [
+        {"expr": "http_requests_in_progress", "legendFormat": "in progress"}
+      ],
+      "gridPos": {"h": 6, "w": 24, "x": 0, "y": 29}
+    },
+    {
+      "type": "row",
+      "title": "Person Object Metrics",
+      "collapsed": false,
+      "gridPos": {"h": 1, "w": 24, "x": 0, "y": 35}
+    },
+    {
+      "type": "timeseries",
+      "title": "Persons Created / Deleted / Not Found (rate)",
+      "datasource": "prometric-k6",
+      "targets": [
+        {"expr": "rate(person_created_total[5m])", "legendFormat": "created"},
+        {"expr": "rate(person_deleted_total[5m])", "legendFormat": "deleted"},
+        {"expr": "rate(person_not_found_total[5m])", "legendFormat": "not found"}
+      ],
+      "gridPos": {"h": 8, "w": 12, "x": 0, "y": 36}
+    },
+    {
+      "type": "timeseries",
+      "title": "Person Payload Size (p95 bytes)",
+      "datasource": "prometric-k6",
+      "targets": [
+        {"expr": "histogram_quantile(0.95, sum(rate(person_payload_size_bytes_bucket[5m])) by (le))", "legendFormat": "p95 payload size"}
+      ],
+      "gridPos": {"h": 8, "w": 12, "x": 12, "y": 36}
+    },
+    {
+      "type": "row",
+      "title": "App Resource Usage",
+      "collapsed": false,
+      "gridPos": {"h": 1, "w": 24, "x": 0, "y": 44}
+    },
+    {
+      "type": "timeseries",
+      "title": "CPU Usage (%)",
+      "datasource": "prometric-k6",
+      "targets": [
+        {"expr": "app_cpu_usage_percent", "legendFormat": "cpu usage"}
+      ],
+      "gridPos": {"h": 6, "w": 12, "x": 0, "y": 45}
+    },
+    {
+      "type": "timeseries",
+      "title": "Memory Usage (MB)",
+      "datasource": "prometric-k6",
+      "targets": [
+        {"expr": "app_memory_usage_megabytes", "legendFormat": "memory usage"}
+      ],
+      "gridPos": {"h": 6, "w": 12, "x": 12, "y": 45}
+    }
+  ],
+  "templating": {
+    "list": []
+  },
+  "annotations": {
+    "list": []
+  }
+}

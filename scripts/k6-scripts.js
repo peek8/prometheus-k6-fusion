@@ -90,12 +90,13 @@ export const options = {
       iterations: 50000,
       startTime: '0s',
       exec: 'createPerson',
+      maxDuration: "20m"
     },
     update_users: {
       executor: 'constant-arrival-rate',
       rate: 5, // 5 req/s
       timeUnit: '1s',
-      duration: '5m',
+      duration: '10m',
       preAllocatedVUs: 5,
       exec: 'updatePerson',
       startTime: '5s', // slight delay
@@ -137,7 +138,6 @@ export function createPerson() {
   const res = http.post(`${BASE_URL}/person`, JSON.stringify(person), {
     headers: { 'Content-Type': 'application/json' },
   });
-  sleep(0.5);
 }
 
 export function updatePerson() {
@@ -146,7 +146,7 @@ export function updatePerson() {
   http.put(`${BASE_URL}/person/${id}`, JSON.stringify(person), {
     headers: { 'Content-Type': 'application/json' },
   });
-  sleep(0.5);
+  sleep(0.2);
 }
 
 export function deletePerson() {
@@ -158,12 +158,12 @@ export function deletePerson() {
 export function getPerson() {
   const id = Math.floor(Math.random() * 1000);
   http.get(`${BASE_URL}/person/${id}`);
-  sleep(0.5);
+  //sleep(0.2);
 }
 
 export function getPersonList() {
   http.get(`${BASE_URL}/person/list`);
-  sleep(0.5);
+  // sleep(0.2);
 }
 
 function pickRandomItem(items) {
